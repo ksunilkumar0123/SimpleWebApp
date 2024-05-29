@@ -89,7 +89,7 @@ h1{
     
     <section id="home">
         <header>
-            <span style="font-size:64px;margin-right:10px;color:orange">Flipkart shopping website</span>
+            <span style="font-size:64px;margin-right:10px;color:orange">Sunil Web APP</span>
             <ul id="menu">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About Us</a></li>
@@ -99,7 +99,7 @@ h1{
             </ul>
 		
         </header>
-         <h1> **** Makesure everyone practice CICD project..which is Real-Time Project **** </h1>   
+         <h1> Gonna build Web app soon </h1>   
 	 
 
     </section>    
