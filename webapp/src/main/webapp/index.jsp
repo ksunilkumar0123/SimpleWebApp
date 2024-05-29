@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Sunil's Gym</title>
+    <title>Sunil's Gym App</title>
     <link rel="stylesheet" href="style.css">
 <style>
 	*{
