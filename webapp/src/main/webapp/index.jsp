@@ -90,7 +90,7 @@
             border-radius: 10px;
         }
 
-        .exercise-form input, .exercise-form textarea, .exercise-form button {
+        .exercise-form select, .exercise-form input, .exercise-form button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -98,7 +98,7 @@
             border-radius: 5px;
         }
 
-        .exercise-form input, .exercise-form textarea {
+        .exercise-form select, .exercise-form input {
             background-color: rgba(255, 255, 255, 0.2);
             color: #fff;
         }
@@ -112,6 +112,16 @@
         .exercise-form button:hover {
             background-color: #555;
         }
+
+        .timer {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        .summary {
+            margin-top: 20px;
+            font-size: 18px;
+        }
     </style>
 </head>
 
@@ -120,10 +130,6 @@
         <span style="font-size: 32px; color: orange;">Sunil's Gym App</span>
         <ul id="menu">
             <li><a href="#home">Home</a></li>
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#product">Product</a></li>
-            <li><a href="#pricing">Pricing</a></li>
-            <li><a href="#contact">Contact</a></li>
             <li><a href="#exercise">Add Exercise</a></li>
         </ul>
     </header>
@@ -133,46 +139,111 @@
         <p>Your journey to a healthier life starts here!</p>
     </section>
 
-    <section id="about">
-        <h1>About Us</h1>
-        <p>We are dedicated to helping you achieve your fitness goals.</p>
-    </section>
-
-    <section id="product">
-        <h1>Our Product</h1>
-        <p>Discover our range of fitness equipment and supplements.</p>
-    </section>
-
-    <section id="pricing">
-        <h1>Pricing</h1>
-        <p>We offer competitive pricing for all our products and services.</p>
-    </section>
-
-    <section id="contact">
-        <h1>Contact Us</h1>
-        <p>Feel free to reach out to us for any inquiries or support.</p>
-    </section>
-
     <section id="exercise">
         <h1>Add Exercise</h1>
         <div class="exercise-form">
-            <input type="text" id="exercise-name" placeholder="Exercise Name" required>
-            <textarea id="exercise-description" placeholder="Exercise Description" rows="4" required></textarea>
-            <button type="button" onclick="addExercise()">Add Exercise</button>
+            <select id="exercise-type" onchange="loadExercises()">
+                <option value="">Select Muscle Group</option>
+                <option value="chest">Chest</option>
+                <option value="back">Back</option>
+                <option value="legs">Legs</option>
+                <option value="triceps">Triceps</option>
+                <option value="abs">Abs</option>
+            </select>
+            <div id="exercises-container"></div>
+            <button type="button" onclick="startTraining()">Start Training</button>
         </div>
     </section>
 
+    <section id="workout" style="display: none;">
+        <h1>Workout</h1>
+        <div class="timer" id="timer">Time: 00:00</div>
+        <div id="workout-container"></div>
+        <button type="button" onclick="finishWorkout()">Finish</button>
+    </section>
+
+    <section id="summary" style="display: none;">
+        <h1>Workout Summary</h1>
+        <div class="summary" id="summary-container"></div>
+    </section>
+
     <script>
-        function addExercise() {
-            const name = document.getElementById('exercise-name').value;
-            const description = document.getElementById('exercise-description').value;
-            if (name && description) {
-                alert(`Exercise Added: \nName: ${name}\nDescription: ${description}`);
-                document.getElementById('exercise-name').value = '';
-                document.getElementById('exercise-description').value = '';
-            } else {
-                alert('Please fill in all fields.');
+        const exercises = {
+            chest: ['Bench Press', 'Push Up', 'Chest Fly'],
+            back: ['Pull Up', 'Deadlift', 'Row'],
+            legs: ['Squat', 'Lunge', 'Leg Press'],
+            triceps: ['Tricep Dip', 'Tricep Extension', 'Tricep Pushdown'],
+            abs: ['Crunch', 'Plank', 'Leg Raise']
+        };
+
+        function loadExercises() {
+            const exerciseType = document.getElementById('exercise-type').value;
+            const container = document.getElementById('exercises-container');
+            container.innerHTML = '';
+            if (exerciseType) {
+                exercises[exerciseType].forEach(exercise => {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = exercise;
+                    checkbox.id = exercise;
+
+                    const label = document.createElement('label');
+                    label.htmlFor = exercise;
+                    label.textContent = exercise;
+
+                    const div = document.createElement('div');
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+                    container.appendChild(div);
+                });
             }
+        }
+
+        let workoutExercises = [];
+        let overallTimer, exerciseTimer;
+        let overallTime = 0, exerciseTime = 0;
+
+        function startTraining() {
+            const selectedExercises = document.querySelectorAll('#exercises-container input:checked');
+            if (selectedExercises.length === 0) {
+                alert('Please select at least one exercise.');
+                return;
+            }
+
+            workoutExercises = Array.from(selectedExercises).map(ex => ex.value);
+            document.getElementById('workout-container').innerHTML = workoutExercises.map(ex => `<h2>${ex}</h2><p>3 sets</p>`).join('');
+
+            document.getElementById('exercise').style.display = 'none';
+            document.getElementById('workout').style.display = 'block';
+
+            overallTime = 0;
+            exerciseTime = 0;
+            updateTimer();
+            overallTimer = setInterval(() => {
+                overallTime++;
+                exerciseTime++;
+                updateTimer();
+            }, 1000);
+        }
+
+        function updateTimer() {
+            document.getElementById('timer').textContent = `Time: ${formatTime(overallTime)} (Exercise: ${formatTime(exerciseTime)})`;
+        }
+
+        function finishWorkout() {
+            clearInterval(overallTimer);
+            document.getElementById('summary-container').innerHTML = `
+                <p>Total Time: ${formatTime(overallTime)}</p>
+                <p>Exercises: ${workoutExercises.join(', ')}</p>
+            `;
+            document.getElementById('workout').style.display = 'none';
+            document.getElementById('summary').style.display = 'block';
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
     </script>
 </body>
