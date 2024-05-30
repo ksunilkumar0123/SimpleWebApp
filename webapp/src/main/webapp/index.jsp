@@ -90,7 +90,9 @@
             border-radius: 10px;
         }
 
-        .exercise-form select, .exercise-form input, .exercise-form button {
+        .exercise-form select,
+        .exercise-form input,
+        .exercise-form button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -98,7 +100,8 @@
             border-radius: 5px;
         }
 
-        .exercise-form select, .exercise-form input {
+        .exercise-form select,
+        .exercise-form input {
             background-color: rgba(255, 255, 255, 0.2);
             color: #fff;
         }
@@ -201,7 +204,8 @@
 
         let workoutExercises = [];
         let overallTimer, exerciseTimer;
-        let overallTime = 0, exerciseTime = 0;
+        let overallTime = 0,
+            exerciseTime = 0;
 
         function startTraining() {
             const selectedExercises = document.querySelectorAll('#exercises-container input:checked');
@@ -247,4 +251,5 @@
         }
     </script>
 </body>
+
 </html>
